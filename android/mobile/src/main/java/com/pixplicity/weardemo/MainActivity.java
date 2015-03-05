@@ -22,8 +22,6 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.pixplicity.weardemo.shared.Constants;
 
-import weardemo.pixplicity.com.com.R;
-
 
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, DataApi.DataListener, GoogleApiClient.OnConnectionFailedListener {
 
