@@ -24,13 +24,31 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Background"
+        android:id="@+id/bt_background"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wear-only action"
+        android:id="@+id/bt_wear_only_action"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Voice reply"
         android:id="@+id/bt_voice_reply"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Pages"
+        android:text="Page"
         android:id="@+id/bt_pages"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DisplayIntent"
+        android:id="@+id/bt_display_intent"/>
 
 </LinearLayout>

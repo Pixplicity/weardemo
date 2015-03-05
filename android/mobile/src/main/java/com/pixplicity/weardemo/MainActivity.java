@@ -41,40 +41,93 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         // Only to illustrate the context
         final Context context = this;
 
+        // Various intents used in notifications
+        Intent intentOpen = new Intent(context, MainActivity.class);
+        final PendingIntent pendingIntentOpen = PendingIntent.getActivity(
+                context,
+                REQUEST_CODE_SIMPLE,
+                intentOpen,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent intentAction = new Intent(context, MainActivity.class);
+        final PendingIntent pendingIntentAction = PendingIntent.getActivity(
+                context,
+                REQUEST_CODE_SIMPLE,
+                intentAction,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Various shared resources
+        final Bitmap background = BitmapFactory.decodeResource(
+                context.getResources(),
+                R.drawable.im_backdrop);
+
         Button btSimple = (Button) findViewById(R.id.bt_simple);
         btSimple.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentOpen = new Intent(context, MainActivity.class);
-                PendingIntent pendingIntentOpen = PendingIntent.getActivity(
+                NotificationCompat.Builder builder = createNotification(
                         context,
-                        REQUEST_CODE_SIMPLE,
-                        intentOpen,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                        .setContentTitle("Hello world!")
-                        .setContentText("This is a simple notification")
-                        .setContentIntent(pendingIntentOpen)
-                        .setSmallIcon(R.drawable.ic_launcher);
+                        pendingIntentOpen,
+                        "This is a simple notification");
 
-                Intent intentAction = new Intent(context, MainActivity.class);
-                PendingIntent pendingIntentAction = PendingIntent.getActivity(
-                        context,
-                        REQUEST_CODE_SIMPLE,
-                        intentAction,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-                Notification notification = builder.extend(
-                        new NotificationCompat.WearableExtender()
-                                .addAction(new NotificationCompat.Action.Builder(
-                                        R.drawable.ic_launcher,
-                                        "Action",
-                                        pendingIntentAction)
-                                        .addRemoteInput(new RemoteInput.Builder(EXTRA_REPLY)
-                                                .setLabel("Reply action")
-                                                .build())
-                                        .build()))
+                NotificationCompat.Action action = new NotificationCompat.Action.Builder(
+                        R.drawable.ic_action_reply,
+                        "Reply",
+                        pendingIntentAction)
+                        .addRemoteInput(new RemoteInput.Builder(EXTRA_REPLY)
+                                .setLabel("Send a reply")
+                                .setChoices(new CharSequence[]{
+                                        "Hello Amsterdam!",
+                                        "Hello Berlin!",
+                                        "Hello Copenhagen!",
+                                        "Hello Dublin!",
+                                        "Hello Edinburgh!",
+                                        "Hello Fortaleza!"})
+                                .build())
                         .build();
-                NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification);
+                builder.addAction(action);
+
+                showNotification(context, builder);
+            }
+        });
+
+        Button btBackground = (Button) findViewById(R.id.bt_background);
+        btBackground.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NotificationCompat.Builder builder = createNotification(
+                        context,
+                        pendingIntentOpen,
+                        "This notification has a background");
+
+                NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender()
+                        .setBackground(background);
+                builder.extend(wearableExtender);
+
+                showNotification(context, builder);
+            }
+        });
+
+        Button btWearOnlyAction = (Button) findViewById(R.id.bt_wear_only_action);
+        btWearOnlyAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NotificationCompat.Builder builder = createNotification(
+                        context,
+                        pendingIntentOpen,
+                        "This notification has a wear-only action");
+
+                NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender()
+                        .setBackground(background)
+                        .addAction(new NotificationCompat.Action.Builder(
+                                R.drawable.ic_action_mute,
+                                "Mute",
+                                pendingIntentAction)
+                                .build());
+
+                builder.extend(wearableExtender);
+
+                showNotification(context, builder);
             }
         });
 
@@ -82,43 +135,32 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         btVoiceReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentOpen = new Intent(context, MainActivity.class);
-                PendingIntent pendingIntentOpen = PendingIntent.getActivity(
+                NotificationCompat.Builder builder = createNotification(
                         context,
-                        REQUEST_CODE_SIMPLE,
-                        intentOpen,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                        .setContentTitle("Hello world!")
-                        .setContentText("This is a simple notification")
-                        .setContentIntent(pendingIntentOpen)
-                        .setSmallIcon(R.drawable.ic_launcher);
+                        pendingIntentOpen,
+                        "This notification has a voice reply");
 
-                Intent intentAction = new Intent(context, MainActivity.class);
-                PendingIntent pendingIntentAction = PendingIntent.getActivity(
-                        context,
-                        REQUEST_CODE_SIMPLE,
-                        intentAction,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-                Notification notification = builder.extend(
-                        new NotificationCompat.WearableExtender()
-                                .addAction(new NotificationCompat.Action.Builder(
-                                        R.drawable.ic_action_reply,
-                                        "Reply",
-                                        pendingIntentAction)
-                                        .addRemoteInput(new RemoteInput.Builder(EXTRA_REPLY)
-                                                .setLabel("Send a reply")
-                                                .setChoices(new CharSequence[]{
-                                                        "Hello Amsterdam!",
-                                                        "Hello Berlin!",
-                                                        "Hello Copenhagen!",
-                                                        "Hello Dublin!",
-                                                        "Hello Edinburgh!",
-                                                        "Hello Fortaleza!"})
-                                                .build())
-                                        .build()))
-                        .build();
-                NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification);
+                NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender()
+                        .setBackground(background);
+                builder.extend(wearableExtender);
+
+                builder.addAction(new NotificationCompat.Action.Builder(
+                        R.drawable.ic_action_reply,
+                        "Reply",
+                        pendingIntentAction)
+                        .addRemoteInput(new RemoteInput.Builder(EXTRA_REPLY)
+                                .setLabel("Send a reply")
+                                .setChoices(new CharSequence[]{
+                                        "Hello Amsterdam!",
+                                        "Hello Berlin!",
+                                        "Hello Copenhagen!",
+                                        "Hello Dublin!",
+                                        "Hello Edinburgh!",
+                                        "Hello Fortaleza!"})
+                                .build())
+                        .build());
+
+                showNotification(context, builder);
             }
         });
 
@@ -126,44 +168,49 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         btPages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentOpen = new Intent(context, MainActivity.class);
-                PendingIntent pendingIntentOpen = PendingIntent.getActivity(
+                NotificationCompat.Builder builder = createNotification(
                         context,
-                        REQUEST_CODE_SIMPLE,
-                        intentOpen,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                        .setContentTitle("Hello world!")
-                        .setContentText("This is a simple notification")
-                        .setContentIntent(pendingIntentOpen)
-                        .setSmallIcon(R.drawable.ic_launcher);
-
-                Intent intentAction = new Intent(context, MainActivity.class);
-                PendingIntent pendingIntentAction = PendingIntent.getActivity(
-                        context,
-                        REQUEST_CODE_SIMPLE,
-                        intentAction,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+                        pendingIntentOpen,
+                        "This notification has a page of information");
 
                 Notification chatHistory = new NotificationCompat.Builder(context)
-                        .setStyle(
-                                new NotificationCompat.BigTextStyle()
-                                        .bigText(getChatHistory()))
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(getChatHistory()))
                         .build();
 
                 Bitmap bigIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+
                 Notification picture = new NotificationCompat.Builder(context)
-                        .setStyle(
-                                new NotificationCompat.BigPictureStyle()
-                                        .bigPicture(bigIcon))
+                        .setStyle(new NotificationCompat.BigPictureStyle()
+                                .bigPicture(bigIcon))
                         .build();
 
-                Notification notification = builder.extend(
-                        new NotificationCompat.WearableExtender()
-                                .addPage(chatHistory)
-                                .addPage(picture))
-                        .build();
-                NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification);
+                NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender()
+                        .setBackground(background)
+                        .addPage(chatHistory)
+                        .addPage(picture);
+                builder.extend(wearableExtender);
+
+                showNotification(context, builder);
+            }
+        });
+
+        Button btDisplayIntent = (Button) findViewById(R.id.bt_display_intent);
+        btDisplayIntent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NotificationCompat.Builder builder = createNotification(
+                        context,
+                        pendingIntentOpen,
+                        "This notification uses a DisplayIntent");
+
+                NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender()
+                        .setBackground(background)
+                        .setCustomSizePreset(Notification.WearableExtender.SIZE_FULL_SCREEN)
+                        .setDisplayIntent(PendingIntent.getActivity(context, 0, new Intent(context, FullscreenWearActivity.class), 0));
+                builder.extend(wearableExtender);
+
+                showNotification(context, builder);
             }
         });
 
@@ -174,6 +221,21 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 .build();
 
         sendData();
+    }
+
+    private NotificationCompat.Builder createNotification(Context context, PendingIntent pendingIntentOpen, String text) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                .setContentTitle("Hello world!")
+                .setContentText(text)
+                .setContentIntent(pendingIntentOpen)
+                .setSmallIcon(R.drawable.ic_launcher);
+
+        return builder;
+    }
+
+    public void showNotification(Context context, NotificationCompat.Builder notificationBuilder) {
+        Notification notification = notificationBuilder.build();
+        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification);
     }
 
     private CharSequence getChatHistory() {
