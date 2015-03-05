@@ -1,4 +1,4 @@
-package weardemo.pixplicity.com.weardemo;
+package com.pixplicity.weardemo;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -21,4 +21,5 @@ public class MainActivity extends Activity {
             }
         });
     }
+
 }

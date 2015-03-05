@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="weardemo.pixplicity.com.weardemo" >
+    package="com.pixplicity.weardemo" >
 
     <uses-feature android:name="android.hardware.type.watch" />
 

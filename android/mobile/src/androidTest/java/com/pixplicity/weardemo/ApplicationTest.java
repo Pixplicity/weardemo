@@ -1,4 +1,4 @@
-package weardemo.pixplicity.com.weardemo;
+package com.pixplicity.weardemo;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

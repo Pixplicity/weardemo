@@ -12,13 +12,25 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Simple notification"
+        android:text="Original notification"
         android:id="@+id/bt_simple"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Enriched notifications"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Device-specific actions"
-        android:id="@+id/bt_actions"/>
+        android:text="Voice reply"
+        android:id="@+id/bt_voice_reply"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pages"
+        android:id="@+id/bt_pages"/>
 
 </LinearLayout>
