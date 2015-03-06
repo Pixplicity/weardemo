@@ -45,10 +45,4 @@
         android:text="Page"
         android:id="@+id/bt_pages"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="DisplayIntent"
-        android:id="@+id/bt_display_intent"/>
-
 </LinearLayout>

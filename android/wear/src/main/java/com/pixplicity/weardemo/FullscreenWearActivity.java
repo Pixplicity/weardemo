@@ -8,7 +8,7 @@ public class FullscreenWearActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fullscreen_wear);
+        setContentView(R.layout.activity_fullscreen);
     }
 
 }

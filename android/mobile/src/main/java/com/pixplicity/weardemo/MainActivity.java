@@ -21,13 +21,12 @@ import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.pixplicity.weardemo.shared.Constants;
+import com.pixplicity.weardemo.shared.NotificationUtils;
 
 
 public class MainActivity extends ActionBarActivity implements GoogleApiClient.ConnectionCallbacks, DataApi.DataListener, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQUEST_CODE_SIMPLE = 100;
-
-    private static final int NOTIFICATION_ID = 1000;
 
     private static final String EXTRA_REPLY = "reply";
 
@@ -40,6 +39,8 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
         // Only to illustrate the context
         final Context context = this;
+
+        final int iconResId = R.drawable.ic_launcher;
 
         // Various intents used in notifications
         Intent intentOpen = new Intent(context, MainActivity.class);
@@ -65,10 +66,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         btSimple.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NotificationCompat.Builder builder = createNotification(
+                NotificationCompat.Builder builder = NotificationUtils.createNotification(
                         context,
                         pendingIntentOpen,
-                        "This is a simple notification");
+                        "This is a simple notification",
+                        iconResId);
 
                 NotificationCompat.Action action = new NotificationCompat.Action.Builder(
                         R.drawable.ic_action_reply,
@@ -87,7 +89,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                         .build();
                 builder.addAction(action);
 
-                showNotification(context, builder);
+                NotificationUtils.showNotification(context, builder);
             }
         });
 
@@ -95,16 +97,17 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         btBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NotificationCompat.Builder builder = createNotification(
+                NotificationCompat.Builder builder = NotificationUtils.createNotification(
                         context,
                         pendingIntentOpen,
-                        "This notification has a background");
+                        "This notification has a background",
+                        iconResId);
 
                 NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender()
                         .setBackground(background);
                 builder.extend(wearableExtender);
 
-                showNotification(context, builder);
+                NotificationUtils.showNotification(context, builder);
             }
         });
 
@@ -112,10 +115,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         btWearOnlyAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NotificationCompat.Builder builder = createNotification(
+                NotificationCompat.Builder builder = NotificationUtils.createNotification(
                         context,
                         pendingIntentOpen,
-                        "This notification has a wear-only action");
+                        "This notification has a wear-only action",
+                        iconResId);
 
                 NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender()
                         .setBackground(background)
@@ -127,7 +131,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
 
                 builder.extend(wearableExtender);
 
-                showNotification(context, builder);
+                NotificationUtils.showNotification(context, builder);
             }
         });
 
@@ -135,10 +139,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         btVoiceReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NotificationCompat.Builder builder = createNotification(
+                NotificationCompat.Builder builder = NotificationUtils.createNotification(
                         context,
                         pendingIntentOpen,
-                        "This notification has a voice reply");
+                        "This notification has a voice reply",
+                        iconResId);
 
                 NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender()
                         .setBackground(background);
@@ -160,7 +165,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                                 .build())
                         .build());
 
-                showNotification(context, builder);
+                NotificationUtils.showNotification(context, builder);
             }
         });
 
@@ -168,10 +173,11 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
         btPages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NotificationCompat.Builder builder = createNotification(
+                NotificationCompat.Builder builder = NotificationUtils.createNotification(
                         context,
                         pendingIntentOpen,
-                        "This notification has a page of information");
+                        "This notification has a page of information",
+                        iconResId);
 
                 Notification chatHistory = new NotificationCompat.Builder(context)
                         .setStyle(new NotificationCompat.BigTextStyle()
@@ -191,27 +197,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                         .addPage(picture);
                 builder.extend(wearableExtender);
 
-                showNotification(context, builder);
-            }
-        });
-
-        // NOTE this does not work from the handheld; the notification needs to be created from a Wear app
-        Button btDisplayIntent = (Button) findViewById(R.id.bt_display_intent);
-        btDisplayIntent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NotificationCompat.Builder builder = createNotification(
-                        context,
-                        pendingIntentOpen,
-                        "This notification uses a DisplayIntent");
-
-                NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender()
-                        .setBackground(background)
-                        .setCustomSizePreset(Notification.WearableExtender.SIZE_FULL_SCREEN)
-                        .setDisplayIntent(PendingIntent.getActivity(context, 0, new Intent(context, FullscreenWearActivity.class), 0));
-                builder.extend(wearableExtender);
-
-                showNotification(context, builder);
+                NotificationUtils.showNotification(context, builder);
             }
         });
 
@@ -222,21 +208,6 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
                 .build();
 
         sendData();
-    }
-
-    private NotificationCompat.Builder createNotification(Context context, PendingIntent pendingIntentOpen, String text) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setContentTitle("Hello world!")
-                .setContentText(text)
-                .setContentIntent(pendingIntentOpen)
-                .setSmallIcon(R.drawable.ic_launcher);
-
-        return builder;
-    }
-
-    public void showNotification(Context context, NotificationCompat.Builder notificationBuilder) {
-        Notification notification = notificationBuilder.build();
-        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification);
     }
 
     private CharSequence getChatHistory() {
