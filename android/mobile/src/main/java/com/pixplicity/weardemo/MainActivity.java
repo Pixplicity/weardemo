@@ -195,6 +195,7 @@ public class MainActivity extends ActionBarActivity implements GoogleApiClient.C
             }
         });
 
+        // NOTE this does not work from the handheld; the notification needs to be created from a Wear app
         Button btDisplayIntent = (Button) findViewById(R.id.bt_display_intent);
         btDisplayIntent.setOnClickListener(new View.OnClickListener() {
             @Override
