@@ -6,7 +6,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "weardemo.pixplicity.com.weardemo"
+        applicationId "com.pixplicity.weardemo"
         minSdkVersion 20
         targetSdkVersion 21
         versionCode 1
